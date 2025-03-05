@@ -1,0 +1,30 @@
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+.grid {
+	width: 500px;
+	height: 500px;
+	margin: 2rem auto;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.block {
+	border: 1px solid #ddd;
+}
+
+.button-container {
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.resize-button {
+	padding: 0.5em 2em;
+	border: none;
+	background-color: burlywood;
+	border-radius: 5px;
+}
