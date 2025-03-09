@@ -4,9 +4,9 @@
 	margin: 0;
 }
 
-
 html {
 	background-color: whitesmoke;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .wrapper {
@@ -35,6 +35,9 @@ html {
 
 .block {
 	position: relative;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
 }
 
 .block::after {
@@ -43,8 +46,6 @@ html {
 	inset: 0;
 	border: 1px solid #ccc;
 }
-
-
 
 .button-container {
 	display: flex;
@@ -59,4 +60,9 @@ html {
 	background-color: burlywood;
 	border-radius: 5px;
 	cursor: pointer;
+}
+
+.sizes>button {
+	width: fit-content;
+	padding: 0.5em;
 }
