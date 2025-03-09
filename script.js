@@ -1,25 +1,21 @@
 const gridElement = document.querySelector("#grid");
-const resizeButton = document.querySelector("#resize-button");
 const rainbowButton = document.querySelector("#rainbow-button");
 const sizesButtons = document.querySelectorAll("#sizes button");
+const clearButton = document.querySelector("#clear-button");
 
 let SIZE = 16;
-let rainbowMode = false;
-let isMouseDown = false;
+const MODES = {
+	rainbowMode: false, draw: false, erase: false,
+}
 
-// initial draw
+/*
+ * INITIAL DRAW 
+ * */
 drawGrid(SIZE, gridElement);
-// Resize
-resizeButton.addEventListener("click", () => {
-	// continious prompt loop until the user input value is between 2 and 100
-	let s = SIZE;
-	do {
-		s = prompt("2 - 100");
-	} while (s > 100 || s < 2);
-	SIZE = s;
-	drawGrid(SIZE, gridElement);
-});
 
+/*
+ * SIZE BUTTONS 
+ * */
 sizesButtons.forEach(btn => {
 	btn.addEventListener("click", () => {
 		SIZE = btn.dataset.value;
@@ -27,18 +23,37 @@ sizesButtons.forEach(btn => {
 	});
 });
 
-// toggle isMouseDown
-window.addEventListener("mousedown", () => {
-	isMouseDown = true;
+/* 
+ * MODES modifier
+ * */
+
+// disable the context menu when pressing the right-click mouse button
+window.addEventListener("contextmenu", (e) => e.preventDefault())
+
+window.addEventListener("mousedown", (e) => {
+	if (e.button === 0) {
+		MODES.draw = true;
+	} else if (e.button === 2) {
+		MODES.draw = true;
+		MODES.erase = true;
+	};
 });
 window.addEventListener("mouseup", () => {
-	isMouseDown = false;
+	MODES.draw = false;
+	MODES.erase = false;
 });
 
-// toggle rainbow mode
 rainbowButton.addEventListener("click", () => {
-	rainbowMode = !rainbowMode;
+	MODES.rainbowMode = !MODES.rainbowMode;
 });
+
+clearButton.addEventListener("click", () => {
+	clearGrid(gridElement);
+})
+
+/*
+ * FUNCTION 
+ * */
 
 function drawGrid(size, container) {
 	container.innerHTML = "";
@@ -48,17 +63,28 @@ function drawGrid(size, container) {
 		block.className = "block bordered";
 		block.setAttribute("style", `width: ${contSize.w / size}px ;height: ${contSize.h / size}px; `);
 		container.appendChild(block);
-		block.addEventListener("mousedown", () => {
-			block.style.backgroundColor = draw(block, rainbowMode);
-		})
+		block.addEventListener("mousedown", (e) => {
+			if (e.button === 0) {
+				block.style.backgroundColor = draw(block, MODES.rainbowMode);
+			} else if (e.button === 2) {
+				block.style.backgroundColor = "";
+			};
+		});
 		block.addEventListener("mouseover", () => {
-			if (isMouseDown) {
-				block.style.backgroundColor = draw(block, rainbowMode);
+			if (MODES.draw) {
+				if (MODES.erase) {
+					block.style.backgroundColor = "";
+				} else {
+					block.style.backgroundColor = draw(block, MODES.rainbowMode);
+				};
 			};
 		});
 	};
 };
 
+function clearGrid(gridElement) {
+	gridElement.childNodes.forEach(block => block.style.backgroundColor = "");
+}
 
 function draw(target, rainbowMode) {
 	if (target.style.backgroundColor) {
@@ -85,4 +111,3 @@ function darken(color) {
 
 	return `rgb(${r}, ${g}, ${b})`;
 };
-
